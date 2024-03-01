@@ -2,18 +2,19 @@ from random import choice
 import argparse
 import os
 import urllib.request
+import cowsay
 
 def ask(prompt: str, valid: list[str] = None):
-    print(prompt)
+    print(cowsay.cowsay(prompt, cow=cowsay.get_random_cow()))
     guess = str(input())
     if valid is not None:
         while guess not in valid:
-            print(prompt)
+            print(cowsay.cowsay(prompt, cow=cowsay.get_random_cow()))
             guess = str(input())
     return guess
 
 def inform(format_string: str, bulls: int, cows: int):
-    print(format_string.format(bulls, cows))
+    print(cowsay.cowsay(format_string.format(bulls, cows), cow=cowsay.get_random_cow()))
 
 def bullscows(guess: str, secret: str):
     bulls = 0
