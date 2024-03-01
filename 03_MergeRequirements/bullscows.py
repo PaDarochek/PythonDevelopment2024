@@ -5,11 +5,12 @@ import urllib.request
 import cowsay
 
 def ask(prompt: str, valid: list[str] = None):
-    print(cowsay.cowsay(prompt, cow=cowsay.get_random_cow()))
+    cow = cowsay.get_cow('turtle', os.path.curdir)
+    print(cowsay.cowsay(prompt, cowfile=cow))
     guess = str(input())
     if valid is not None:
         while guess not in valid:
-            print(cowsay.cowsay(prompt, cow=cowsay.get_random_cow()))
+            print(cowsay.cowsay(prompt, cowfile=cow))
             guess = str(input())
     return guess
 
