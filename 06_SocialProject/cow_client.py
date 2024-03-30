@@ -53,13 +53,14 @@ class simple(cmd.Cmd):
             mutex.acquire()
             waiting_recv = True
             self.socket.sendall('who\n'.encode())
-            options = self.socket.recv(1024).rstrip().decode().split(', ')
+            options = self.socket.recv(1024).rstrip().decode().split(': ')[1].split(', ')
             waiting_recv = False
             mutex.release()
         return [c for c in options if c.startswith(text)]
 
     def do_quit(self, arg):
         self.socket.sendall(f'quit {arg}\n'.encode())
+        self.socket.close()
         exit(0)
 
 
@@ -76,9 +77,16 @@ def receive(s: socket.socket, cmdline):
             msg = s.recv(1024).rstrip().decode()
             if len(msg) > 0:
                 print(f"\n{msg}\n{cmdline.prompt}{readline.get_line_buffer()}", end="", flush=True)
+        except OSError as err:
+            if 'Bad file descriptor' in repr(err):
+                mutex.release()
+                break
         except:
             pass
-        s.setblocking(True)
+        try:
+            s.setblocking(True)
+        except:
+            pass
         mutex.release()
 
 
